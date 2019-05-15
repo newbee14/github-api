@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Issue count finder</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <style>
+  .animate{
+    height:100vh;
+    background: linear-gradient(228deg, #52e0ee, #a367f7);
+    background-size: 400% 400%;
+    overflow-y: auto; 
+
+    -webkit-animation: backgroundAnim 30s ease infinite;
+    -moz-animation: backgroundAnim 30s ease infinite;
+    animation: backgroundAnim 30s ease infinite;
+  }
+  @-webkit-keyframes backgroundAnim {
+    0%{background-position:0% 84%}
+    50%{background-position:100% 17%}
+    100%{background-position:0% 84%}
+  }
+  @-moz-keyframes backgroundAnim {
+    0%{background-position:0% 84%}
+    50%{background-position:100% 17%}
+    100%{background-position:0% 84%}
+  }
+  @keyframes backgroundAnim {
+    0%{background-position:0% 84%}
+    50%{background-position:100% 17%}
+    100%{background-position:0% 84%}
+  }
+</style>
+</head>
+<body>
+  <div class="container-fluid animate">
+    <div class="row h-100 justify-content-center align-items-center">
+      <div class="col-6">
+        <div class="jumbotron w-100 shadow">
+          <h1 class="display-4 text-center">Issue Count Finder</h1>
+          <p class="lead text-center">Enter Repository URL.</p>
+          <hr class="my-4">
+          <form name="repourl" id="frm1" onsubmit="return myFunction(event)">
+            <div class="form-group">
+              <!-- <label for="url">Url</label> -->
+              <input name="url" type="url" class="form-control" id="url" aria-describedby="url" placeholder="http(s)://github.com/user/repo">
+            </div>
+            <!-- <input type="button" value="Submit" onclick="myFunction()"> -->
+            <button type="submit" class="btn btn-primary btn-lg px-5 d-block mx-auto">Submit</button>
+          </form>
+          <hr class="my-4">
+          <div class="progress" id="progress" style="display:none;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+          </div>
+          <!-- error block -->
+          <div>
+            <div class="row">
+              <div class="col text-muted text-center pb-4" ><h4 id="error-container"></h4></div>
+            </div>    
+          
+          </div>
+          <!-- end error block-->
+          <div class="container d-none" id="data-container">
+            <div class="row">
+              <div class="col text-muted text-center pb-4"><h4>Issue Stats for: <span id="repoUrl" class="text-dark"></span> </h4></div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <h5 class="text-muted">Repository Owner:</h5>
+              </div>
+              <div class="col" id="repoOwner"></div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <h5 class="text-muted">Repository Name:</h5>
+              </div>
+              <div class="col" id="repoName"></div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <h5 class="text-muted">Repository Total Open Issues:</h5>
+              </div>
+              <div class="col" id="issueTotal"></div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <h5 class="text-muted">Issues Open More than 7 Days Ago:</h5>
+              </div>
+              <div class="col" id="issueMoreThan7"></div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <h5 class="text-muted">Issues Open In last 7 Days:</h5>
+              </div>
+              <div class="col" id="issue7"></div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <h5 class="text-muted">Issues Opened Yesterday:</h5>
+              </div>
+              <div class="col" id="issueYesterday"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  function myFunction(e) {
+    e.preventDefault();
+    document.querySelector("#progress").style.display="flex";
+    document.querySelector("#progress").children[0].style.width="0";
+    setTimeout(()=>{
+      document.querySelector("#progress").children[0].style.width="25%";
+    },500);
+    var nameValue = document.getElementById("url").value;
+    // console.log(nameValue);
+    var endpoint=new URL('http://localhost:8000'), params = {"url":nameValue};
+    Object.keys(params).forEach(key => endpoint.searchParams.append(key, params[key]))
+    // console.log(endpoint);
+
+
+    fetch(endpoint,{
+      method: 'GET',
+    })
+    .then(res=>res.json())
+    .then(data=>{
+      console.log(data);
+      document.querySelector("#progress").children[0].style.width="100%";
+      document.querySelector("#error-container").textContent="";
+      setTimeout(()=>{
+        document.querySelector("#progress").style.display="none";
+      },1000);
+      if(data.statusCode || data.error){
+        document.querySelector("#error-container").textContent="Error Occured: Kindly check URL"
+        document.querySelector("#data-container").className="container d-none";
+      }
+      else{
+      document.querySelector("#error-container").textContent=""
+      document.querySelector("#repoUrl").textContent=data.repoUrl;
+      document.querySelector("#repoOwner").textContent=data.repoOwner;
+      document.querySelector("#repoName").textContent=data.repoName;
+      document.querySelector("#issueTotal").textContent=data.openIssueCount;
+      document.querySelector("#issueMoreThan7").textContent=data.moreThanSevenDays;
+      document.querySelector("#issue7").textContent=data.lastSevenDaysOpenIssueCount;
+      document.querySelector("#issueYesterday").textContent=data.lastDayOpenIssueCount;
+      document.querySelector("#data-container").className="container d-block";
+      }
+    })
+  }
+  </script>
+
+
+</body>
+</html>

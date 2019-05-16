@@ -117,7 +117,7 @@
     },500);
     var nameValue = document.getElementById("url").value;
     // console.log(nameValue);
-    var endpoint=new URL('http://localhost:8000'), params = {"url":nameValue};
+    var endpoint=new URL('http://35.236.94.149:8000'), params = {"url":nameValue};
     Object.keys(params).forEach(key => endpoint.searchParams.append(key, params[key]))
     // console.log(endpoint);
 

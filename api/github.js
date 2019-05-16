@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 const moment = require('moment');
 
-const TOKEN = '63749b346229d86210110ccf5734bdee45484b61'; //github token for Authentication
+const TOKEN = 'a25a0f185463d850849052d2a20a742c07d45099'; //github token for Authentication
 const defaultFetchOptions = {
 	method: 'get',
 	headers: {

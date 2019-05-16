@@ -14,9 +14,8 @@
   - This code is written Node.js and I've used fatify as the middleware.
 
 ### Future Work
-Github's API v4 is using GraphQL which in some blog posts is claimed to be fater than rest. So if given more time I would have tried ti implement GraphQL.
-The API itself is very low performing there isn't much can be done the way we pull the data minor tweaks can surely improve the performance a bit in my view there cant be any considerable improvement. 
+Github's API v4 is using GraphQL which in some blog posts is claimed to be fater than REST. So if given more time I would have tried to implement GraphQL.
+The API itself is very low performing there isn't much can be done the way we pull the data minor tweaks can surely improve the performance a bit but in my view there won't be any considerable improvement. 
 
-###Important
-To run this you will have to give your Auth token at /api/github.js line 4. Which you can generate from settings/Developer settings/personal acess token
-
+#Important
+To run this you will have to give your Auth token at /api/github.js line 4. Which you can generate from settings/Developer settings/personal acess token.
